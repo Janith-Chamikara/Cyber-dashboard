@@ -32,7 +32,7 @@ const terminalCommands = [
       "Not shown: 994 closed ports",
       "PORT    STATE SERVICE     VERSION",
       "22/tcp  open  ssh         OpenSSH 8.9p1 Ubuntu 3ubuntu0.4",
-      "80/tcp  open  http        Apache httpd 2.4.52",
+      "80/tcp  open  http        RED_CYPHER{7h3_Ch453}",
       "443/tcp open  https       Apache httpd 2.4.52",
       "445/tcp open  netbios-ssn Samba smbd 4.6.2",
       "3306/tcp open  mysql      MySQL 8.0.33-0ubuntu0.22.04.2",
