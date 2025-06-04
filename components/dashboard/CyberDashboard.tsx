@@ -4,20 +4,19 @@ import { useState, useEffect, useRef } from "react";
 import {
   Terminal,
   Shield,
-  Users,
   AlertTriangle,
   Server,
-  Wifi,
-  BarChart3,
   Clock,
   UserCheck,
   UserX,
   Maximize2,
   X,
-  RefreshCw,
   Camera,
   Search,
   User,
+  FileText,
+  Database,
+  Skull,
 } from "lucide-react";
 import Image from "next/image";
 
@@ -53,100 +52,110 @@ const terminalCommands = [
       "13:22:45.234871 IP 10.0.14.32.80 > 192.168.1.105.52431: Flags [.], ack 74, win 509, options [nop,nop,TS val 2564332112 ecr 3604376953], length 0",
     ],
   },
+];
+
+// Hacked terminal commands
+const hackedTerminalCommands = [
   {
-    command: "binwalk -e suspicious_firmware.bin",
+    command: "cat /var/log/auth.log | grep 'Failed password'",
     response: [
-      "DECIMAL       HEXADECIMAL     DESCRIPTION",
-      "--------------------------------------------------------------------------------",
-      "0             0x0             ELF, 32-bit LSB executable, ARM, version 1 (SYSV)",
-      "1204          0x4B4           Certificate in DER format (x509 v3), header length: 4, sequence length: 64",
-      "2780          0xADC           gzip compressed data, maximum compression, from Unix, last modified: 2025-04-15 08:32:11",
-      "15732         0x3D74          JFIF (JPEG) image data, JFIF standard 1.01",
-      '47392         0xB920          XML document, version: "1.0"',
-      "68204         0x10A6C         Unix path: /usr/share/firmware/config/default_settings.xml",
-      "89122         0x15C32         Zip archive data, at least v2.0 to extract, compressed size: 8932, uncompressed size: 23091, name: hidden_data.txt",
-      "98054         0x17F36         End of Zip archive, footer length: 22",
-      "98076         0x17F4C         PNG image, 320 x 240, 8-bit/color RGB, non-interlaced",
-      "102394        0x1901A         Unix path: /etc/shadow",
-      "120832        0x1D820         Certificate in DER format (x509 v3), header length: 4, sequence length: 929",
-      "145920        0x23A00         Linux kernel version 5.15.0",
-      "167936        0x29000         CRC32 polynomial table, little endian",
-      "262144        0x40000         LZMA compressed data, properties: 0x5D, dictionary size: 8388608 bytes, uncompressed size: 3932160 bytes",
-      "",
-      "Scan completed. Extracting 7 identified signatures...",
-      "",
-      'Extracting gzip compressed data to "_suspicious_firmware.bin.extracted/ADC.gz"...',
-      'Extracting JFIF image to "_suspicious_firmware.bin.extracted/3D74.jpg"...',
-      'Extracting Zip archive to "_suspicious_firmware.bin.extracted/15C32.zip"...',
-      'Extracting PNG image to "_suspicious_firmware.bin.extracted/17F4C.png"...',
-      'Extracting LZMA compressed data to "_suspicious_firmware.bin.extracted/40000.lzma"...',
-      "",
-      "Extraction completed. Found hidden data in multiple formats.",
+      "May 22 12:01:23 server sshd[12345]: Failed password for root from 185.143.223.45 port 43150 ssh2",
+      "May 22 12:01:25 server sshd[12345]: Failed password for root from 185.143.223.45 port 43151 ssh2",
+      "May 22 12:01:28 server sshd[12345]: Failed password for root from 185.143.223.45 port 43152 ssh2",
+      "May 22 12:01:30 server sshd[12346]: Failed password for admin from 185.143.223.45 port 43153 ssh2",
+      "May 22 12:01:33 server sshd[12346]: Failed password for admin from 185.143.223.45 port 43154 ssh2",
+      "May 22 12:01:35 server sshd[12347]: Failed password for sysadmin from 185.143.223.45 port 43155 ssh2",
+      "May 22 12:01:38 server sshd[12347]: Failed password for sysadmin from 185.143.223.45 port 43156 ssh2",
+      "May 22 12:01:40 server sshd[12348]: Failed password for webadmin from 185.143.223.45 port 43157 ssh2",
+      "May 22 12:01:43 server sshd[12348]: Failed password for webadmin from 185.143.223.45 port 43158 ssh2",
+      "May 22 12:01:45 server sshd[12349]: Accepted password for webadmin from 185.143.223.45 port 43159 ssh2",
+      "May 22 12:01:45 server sshd[12349]: pam_unix(sshd:session): session opened for user webadmin by (uid=0)",
     ],
   },
   {
-    command: "zsteg -a suspicious_image.png",
+    command: "ls -la /var/www/html/admin/",
     response: [
-      'imagedata           .. text: "CREATOR: gd-jpeg v1.0 (using IJG JPEG v62), quality = 75"',
-      'b1,rgb,lsb,xy       .. text: "Coordinates: 34.0522° N, 118.2437° W"',
-      'b1,rgba,lsb,xy      .. text: "Operation Blackout: Phase 2 begins at 02:30 UTC"',
-      "b2,r,msb,xy         .. file: PGP Secret Key -",
-      'b2,g,msb,xy         .. text: "Contact: shadow@darkweb.onion"',
-      'b2,b,msb,xy         .. text: "Password: 7Hj9k2L5pQ8rT3x"',
-      "b3,rgb,msb,xy       .. file: Zip archive data, at least v1.0 to extract",
-      'b4,r,msb,xy         .. text: "EXIF metadata contains additional information"',
-      "b4,g,msb,xy         .. text: \"Check steghide with passphrase 'bluehawk'\"",
-      'b4,b,msb,xy         .. text: "[REDACTED]"',
-      "",
-      "Analyzing metadata...",
-      "Creation Time: 2025-05-10 03:14:22",
-      "Software: Adobe Photoshop CC 2025 (Windows)",
-      "GPS Information: Present (see coordinates above)",
-      "",
-      "Checking for additional LSB data...",
-      "Found hidden binary data (possible encrypted container)",
-      "Found hidden text in alpha channel",
-      "",
-      "Analyzing color histogram for anomalies...",
-      "Unusual color distribution detected in lower right quadrant",
-      "Possible steganographic payload: 2.3 KB",
-      "",
-      "Analysis complete. Multiple hidden payloads detected.",
+      "total 56",
+      "drwxr-xr-x 3 www-data www-data 4096 May 22 12:15 .",
+      "drwxr-xr-x 8 www-data www-data 4096 May 22 12:15 ..",
+      "-rw-r--r-- 1 www-data www-data 2458 May 22 12:15 config.php",
+      "-rw-r--r-- 1 www-data www-data 3521 May 22 12:15 dashboard.php",
+      "-rw-r--r-- 1 www-data www-data 1245 May 22 12:15 db_connect.php",
+      "-rw-r--r-- 1 www-data www-data 4521 May 22 12:15 exam_results.php",
+      "-rw-r--r-- 1 www-data www-data 3254 May 22 12:15 faculty_data.php",
+      "-rw-r--r-- 1 www-data www-data 2145 May 22 12:15 index.php",
+      "-rw-r--r-- 1 www-data www-data 1854 May 22 12:15 login.php",
+      "-rw-r--r-- 1 www-data www-data  845 May 22 12:15 logout.php",
+      "-rw-r--r-- 1 www-data www-data 3254 May 22 12:15 student_records.php",
+      "-rw-r--r-- 1 www-data www-data 2541 May 22 12:15 upload.php",
+      "drwxr-xr-x 2 www-data www-data 4096 May 22 12:15 uploads",
     ],
   },
   {
-    command: "dirb http://10.0.14.32/",
+    command: "cat /var/www/html/admin/db_connect.php",
     response: [
-      "DIRB v2.22",
-      "By The Dark Raver",
-      "-----------------",
+      "<?php",
+      "// Database connection settings",
+      "$db_host = 'localhost';",
+      "$db_name = 'university_records';",
+      "$db_user = 'dbadmin';",
+      "$db_pass = 'Eng1n33r1ng@2025!';",
       "",
-      "START_TIME: Thu May 22 13:24:01 2025",
-      "URL_BASE: http://10.0.14.32/",
-      "WORDLIST_FILES: /usr/share/dirb/wordlists/common.txt",
+      "// Create connection",
+      "$conn = new mysqli($db_host, $db_user, $db_pass, $db_name);",
       "",
-      "-----------------",
-      "",
-      "GENERATED WORDS: 4612",
-      "",
-      "---- Scanning URL: http://10.0.14.32/ ----",
-      "+ http://10.0.14.32/admin (CODE:301|SIZE:0)",
-      "+ http://10.0.14.32/assets (CODE:301|SIZE:0)",
-      "+ http://10.0.14.32/backup (CODE:301|SIZE:0)",
-      "+ http://10.0.14.32/css (CODE:301|SIZE:0)",
-      "+ http://10.0.14.32/dashboard (CODE:301|SIZE:0)",
-      "+ http://10.0.14.32/images (CODE:301|SIZE:0)",
-      "+ http://10.0.14.32/index.php (CODE:200|SIZE:7345)",
-      "+ http://10.0.14.32/js (CODE:301|SIZE:0)",
-      "+ http://10.0.14.32/login.php (CODE:200|SIZE:1255)",
-      "+ http://10.0.14.32/logout.php (CODE:302|SIZE:0)",
-      "+ http://10.0.14.32/phpinfo.php (CODE:200|SIZE:94842)",
-      "+ http://10.0.14.32/robots.txt (CODE:200|SIZE:26)",
-      "+ http://10.0.14.32/server-status (CODE:403|SIZE:277)",
-      "+ http://10.0.14.32/uploads (CODE:301|SIZE:0)",
-      "",
-      "-----------------",
-      "END_TIME: Thu May 22 13:24:32 2025",
+      "// Check connection",
+      "if ($conn->connect_error) {",
+      '    die("Connection failed: " . $conn->connect_error);',
+      "}",
+      "?>",
+    ],
+  },
+  {
+    command:
+      "mysql -u dbadmin -p'Eng1n33r1ng@2025!' -e 'SHOW TABLES FROM university_records;'",
+    response: [
+      "Tables_in_university_records",
+      "admin_users",
+      "course_materials",
+      "courses",
+      "departments",
+      "exam_results",
+      "faculty",
+      "grades",
+      "research_papers",
+      "staff",
+      "student_records",
+      "thesis_documents",
+      "users",
+    ],
+  },
+  {
+    command:
+      "mysql -u dbadmin -p'Eng1n33r1ng@2025!' -e 'SELECT id, student_id, name, course_id, grade, semester FROM exam_results LIMIT 10;'",
+    response: [
+      "id\tstudent_id\tname\tcourse_id\tgrade\tsemester",
+      "1\tS10045\tAhmed Khan\tCS401\t92\tSpring 2025",
+      "2\tS10062\tSarah Johnson\tCS401\t88\tSpring 2025",
+      "3\tS10078\tRavi Patel\tCS401\t76\tSpring 2025",
+      "4\tS10103\tMaria Rodriguez\tCS401\t95\tSpring 2025",
+      "5\tS10124\tJohn Smith\tCS401\t81\tSpring 2025",
+      "6\tS10045\tAhmed Khan\tEE305\t85\tSpring 2025",
+      "7\tS10062\tSarah Johnson\tEE305\t91\tSpring 2025",
+      "8\tS10078\tRavi Patel\tEE305\t79\tSpring 2025",
+      "9\tS10103\tMaria Rodriguez\tEE305\t88\tSpring 2025",
+      "10\tS10124\tJohn Smith\tEE305\t72\tSpring 2025",
+    ],
+  },
+  {
+    command: 'find /var/www -name "*.zip" -type f',
+    response: [
+      "/var/www/html/admin/uploads/backup_2025-05-20.zip",
+      "/var/www/html/admin/uploads/exam_papers_spring2025.zip",
+      "/var/www/html/admin/uploads/faculty_research_2025.zip",
+      "/var/www/html/admin/uploads/student_thesis_archive.zip",
+      "/var/www/html/admin/uploads/financial_records_2024-2025.zip",
+      "/var/www/html/admin/uploads/admission_records_2025.zip",
     ],
   },
 ];
@@ -242,61 +251,130 @@ const teamMembers = [
 // Security alerts data
 const securityAlerts = [
   {
+    id: 1,
+    level: "critical",
+    message: "SYSTEM BREACH DETECTED - Multiple admin accounts compromised",
+    timestamp: "13:15:22",
+    source: "Authentication System",
+  },
+  {
     id: 2,
-    level: "high",
-    message: "Unusual outbound data transfer detected on server SRV-DB-03",
-    timestamp: "12:47:15",
+    level: "critical",
+    message: "Unusual data exfiltration: 2.3GB transferred to external IP",
+    timestamp: "13:22:47",
     source: "Network Monitor",
   },
   {
     id: 3,
-    level: "medium",
-    message: "New vulnerability detected: CVE-2025-1234 on web server",
-    timestamp: "11:32:08",
+    level: "high",
+    message: "Database credentials exposed in public repository",
+    timestamp: "13:05:18",
     source: "Vulnerability Scanner",
   },
   {
     id: 4,
-    level: "low",
-    message: "Certificate expiring in 15 days for domain lms.eng.ruh.ac.lk",
-    timestamp: "10:15:30",
-    source: "Certificate Monitor",
+    level: "high",
+    message: "Unauthorized access to exam results database",
+    timestamp: "12:58:30",
+    source: "Database Monitor",
   },
   {
     id: 5,
     level: "high",
-    message: "Malware signature detected: Trojan.Emotet variant",
-    timestamp: "09:23:47",
+    message: "Malware signature detected: Ransomware variant",
+    timestamp: "12:45:47",
     source: "Endpoint Protection",
   },
 ];
 
-// Network traffic data for visualization
-const networkTrafficData = [
-  { time: "13:00", inbound: 42, outbound: 28 },
-  { time: "13:05", inbound: 45, outbound: 30 },
-  { time: "13:10", inbound: 50, outbound: 35 },
-  { time: "13:15", inbound: 48, outbound: 32 },
-  { time: "13:20", inbound: 52, outbound: 38 },
-];
-
 // System status data
 const systemStatus = [
-  { name: "Firewall", status: "operational", uptime: "45d 12h 37m", load: 42 },
-  { name: "IDS/IPS", status: "operational", uptime: "30d 05h 12m", load: 38 },
+  { name: "Firewall", status: "compromised", uptime: "45d 12h 37m", load: 92 },
+  { name: "IDS/IPS", status: "offline", uptime: "0h 15m", load: 0 },
   {
     name: "Web Server",
-    status: "operational",
+    status: "compromised",
     uptime: "15d 22h 45m",
-    load: 65,
+    load: 95,
   },
-  { name: "Database", status: "operational", uptime: "15d 22h 45m", load: 58 },
-  { name: "Auth Server", status: "degraded", uptime: "5d 14h 22m", load: 87 },
+  { name: "Database", status: "compromised", uptime: "15d 22h 45m", load: 88 },
+  {
+    name: "Auth Server",
+    status: "compromised",
+    uptime: "5d 14h 22m",
+    load: 97,
+  },
   {
     name: "Backup System",
     status: "operational",
     uptime: "10d 08h 15m",
     load: 25,
+  },
+];
+
+// Stolen data categories
+const stolenDataCategories = [
+  {
+    name: "Exam Results",
+    files: 145,
+    size: "1.2 GB",
+    status: "Exfiltrated",
+    timestamp: "13:05:22",
+  },
+  {
+    name: "Student Records",
+    files: 2458,
+    size: "3.5 GB",
+    status: "Exfiltrating",
+    timestamp: "13:22:15",
+  },
+  {
+    name: "Research Papers",
+    files: 87,
+    size: "750 MB",
+    status: "Exfiltrated",
+    timestamp: "13:10:47",
+  },
+  {
+    name: "Financial Records",
+    files: 56,
+    size: "420 MB",
+    status: "Queued",
+    timestamp: "Pending",
+  },
+  {
+    name: "Faculty Data",
+    files: 124,
+    size: "890 MB",
+    status: "Exfiltrated",
+    timestamp: "13:15:33",
+  },
+  {
+    name: "Admin Credentials",
+    files: 12,
+    size: "5 MB",
+    status: "Exfiltrated",
+    timestamp: "12:58:10",
+  },
+];
+
+// CCTV camera feeds
+const cctvFeeds = [
+  {
+    id: 1,
+    location: "IS Department Entrance",
+    status: "offline",
+    lastMotion: "13:24:05",
+    recording: false,
+    image: "/placeholder.svg?height=180&width=320",
+  },
+  {
+    id: 2,
+    location: "FOE Entrance",
+    status: "offline",
+    lastMotion: "13:24:05",
+    recording: false,
+    image: "/placeholder.svg?height=180&width=320",
   },
 ];
 
@@ -311,29 +389,9 @@ const wantedPersons = [
     charges: "Cyber Terrorism, Data Theft, Critical Infrastructure Attacks",
     threat: "high",
     lastSeen: "Near Electrical Department",
-    image: "/wanted.png",
+    image: "/placeholder.svg?height=200&width=150",
     notes:
       "Known for sophisticated attacks on financial institutions. Extremely dangerous.",
-  },
-];
-
-// CCTV camera feeds
-const cctvFeeds = [
-  {
-    id: 1,
-    location: "IS Department Entrance",
-    status: "online",
-    lastMotion: "13:24:05",
-    recording: true,
-    image: "/cctv-2.jpg",
-  },
-  {
-    id: 1,
-    location: "FOE Entrance",
-    status: "online",
-    lastMotion: "13:24:05",
-    recording: true,
-    image: "/cctv-1.png",
   },
 ];
 
@@ -351,6 +409,11 @@ export default function CyberDashboard() {
   const [expandedWindow, setExpandedWindow] = useState<number | null>(null);
   const [activeCameraFeed, setActiveCameraFeed] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [glitchIntensity, setGlitchIntensity] = useState(0);
+  const [showHackedMessage, setShowHackedMessage] = useState(false);
+  const [showDataTheft, setShowDataTheft] = useState(false);
+  const [hackProgress, setHackProgress] = useState(0);
+  const [encryptionProgress, setEncryptionProgress] = useState(0);
 
   const terminalRefs = useRef<(HTMLDivElement | null)[]>([]);
 
@@ -392,13 +455,68 @@ export default function CyberDashboard() {
     return () => clearInterval(timer);
   }, []);
 
+  // Glitch effect
+  useEffect(() => {
+    // Start with low glitch
+    setGlitchIntensity(1);
+
+    // Increase glitch over time
+    const glitchTimer = setTimeout(() => {
+      setGlitchIntensity(2);
+
+      // Show hacked message after a delay
+      setTimeout(() => {
+        setShowHackedMessage(true);
+
+        // Show data theft message after another delay
+        setTimeout(() => {
+          setShowDataTheft(true);
+        }, 3000);
+      }, 2000);
+    }, 1000);
+
+    // Start hack progress animation
+    const hackProgressInterval = setInterval(() => {
+      setHackProgress((prev) => {
+        if (prev >= 100) {
+          clearInterval(hackProgressInterval);
+          return 100;
+        }
+        return prev + 1;
+      });
+    }, 150);
+
+    // Start encryption progress animation after a delay
+    setTimeout(() => {
+      const encryptionInterval = setInterval(() => {
+        setEncryptionProgress((prev) => {
+          if (prev >= 100) {
+            clearInterval(encryptionInterval);
+            return 100;
+          }
+          return prev + 2;
+        });
+      }, 200);
+    }, 5000);
+
+    return () => {
+      clearTimeout(glitchTimer);
+      clearInterval(hackProgressInterval);
+    };
+  }, []);
+
   // Terminal typing effect - Continuously running
   useEffect(() => {
     const timers: NodeJS.Timeout[] = [];
 
     // Process each terminal
     for (let terminalIndex = 0; terminalIndex < 4; terminalIndex++) {
-      const currentCommand = terminalCommands[commandIndex[terminalIndex]];
+      // Use hacked commands for terminals 1-3
+      const commandsToUse =
+        terminalIndex === 0 ? terminalCommands : hackedTerminalCommands;
+
+      const currentCommand =
+        commandsToUse[commandIndex[terminalIndex] % commandsToUse.length];
 
       if (!isTyping[terminalIndex]) {
         // Start typing after a random delay
@@ -485,7 +603,10 @@ export default function CyberDashboard() {
 
                   const newCommandIndex = [...commandIndex];
                   newCommandIndex[terminalIndex] =
-                    (commandIndex[terminalIndex] + 1) % terminalCommands.length;
+                    (commandIndex[terminalIndex] + 1) %
+                    (terminalIndex === 0
+                      ? terminalCommands.length
+                      : hackedTerminalCommands.length);
                   setCommandIndex(newCommandIndex);
 
                   const newCurrentLine = [...currentLine];
@@ -544,19 +665,119 @@ export default function CyberDashboard() {
     setActiveCameraFeed(activeCameraFeed === id ? null : id);
   };
 
+  // Glitch text effect
+  const glitchText = (text: string) => {
+    if (glitchIntensity === 0) return text;
+
+    const glitchChars = "!@#$%^&*()_+-=[]{}|;:,.<>?/\\~`";
+    let result = "";
+
+    for (let i = 0; i < text.length; i++) {
+      if (Math.random() < 0.05 * glitchIntensity) {
+        result += glitchChars[Math.floor(Math.random() * glitchChars.length)];
+      } else {
+        result += text[i];
+      }
+    }
+
+    return result;
+  };
+
   return (
-    <div className="min-h-screen bg-gray-900 text-gray-200 font-mono">
+    <div className="min-h-screen bg-gray-900 text-gray-200 font-mono relative">
+      {/* Glitch overlay */}
+      <div
+        className="fixed inset-0 pointer-events-none z-10 bg-red-900/5 overflow-hidden"
+        style={{
+          backgroundImage:
+            "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,0,0,0.03) 3px, transparent 3px)",
+        }}
+      >
+        {/* Random glitch lines */}
+        {Array.from({ length: 10 }).map((_, i) => (
+          <div
+            key={i}
+            className="absolute bg-red-500/20"
+            style={{
+              height: `${Math.random() * 2}px`,
+              width: `${Math.random() * 100}%`,
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              opacity: Math.random() * 0.5,
+              transform: `rotate(${Math.random() * 360}deg)`,
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Hacked message overlay */}
+      {showHackedMessage && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none">
+          <div className="bg-black/80 p-8 rounded-lg border-2 border-red-500 max-w-2xl w-full text-center">
+            <h1 className="text-red-500 text-4xl font-bold mb-4 animate-pulse">
+              SYSTEM COMPROMISED
+            </h1>
+            <p className="text-red-400 text-xl mb-6">
+              Faculty of Engineering Cybersecurity Unit has been breached
+            </p>
+
+            <div className="mb-6">
+              <div className="flex justify-between text-sm mb-1">
+                <span className="text-gray-400">System Takeover Progress</span>
+                <span className="text-red-400">{hackProgress}%</span>
+              </div>
+              <div className="w-full bg-gray-800 rounded-full h-2">
+                <div
+                  className="bg-red-600 h-2 rounded-full"
+                  style={{ width: `${hackProgress}%` }}
+                ></div>
+              </div>
+            </div>
+
+            {showDataTheft && (
+              <div className="mb-6">
+                <div className="flex justify-between text-sm mb-1">
+                  <span className="text-gray-400">
+                    Data Encryption Progress
+                  </span>
+                  <span className="text-red-400">{encryptionProgress}%</span>
+                </div>
+                <div className="w-full bg-gray-800 rounded-full h-2">
+                  <div
+                    className="bg-yellow-600 h-2 rounded-full"
+                    style={{ width: `${encryptionProgress}%` }}
+                  ></div>
+                </div>
+              </div>
+            )}
+
+            <div className="text-yellow-500 text-lg">
+              {encryptionProgress >= 100 ? (
+                <span className="animate-pulse">
+                  ALL YOUR DATA HAS BEEN ENCRYPTED
+                </span>
+              ) : (
+                <span>Encrypting university data...</span>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
-      <header className="bg-black border-b border-gray-800 p-4">
+      <header className="bg-black border-b border-gray-800 p-4 relative overflow-hidden">
         <div className="container mx-auto flex justify-between items-center">
           <div className="flex items-center">
-            <Shield className="h-8 w-8 text-green-500 mr-3" />
+            <Shield className="h-8 w-8 text-red-500 mr-3" />
             <div>
-              <h1 className="text-xl font-bold text-green-400">
-                Faculty of Engineering
+              <h1 className="text-xl font-bold text-red-400">
+                {glitchText("Faculty of Engineering")}
               </h1>
               <p className="text-sm text-gray-400">
-                Intelligence and Cybersecurity Unit
+                {glitchText("Intelligence and Cybersecurity Unit")}{" "}
+                <span className="text-red-500 animate-pulse">
+                  [COMPROMISED]
+                </span>
               </p>
             </div>
           </div>
@@ -579,16 +800,27 @@ export default function CyberDashboard() {
                 <span className="text-red-400">{offlineMembers}</span>
               </div>
               <div className="flex items-center bg-gray-800 px-3 py-1 rounded-md">
-                <AlertTriangle className="h-4 w-4 text-yellow-500 mr-2" />
-                <span className="text-yellow-400">
+                <AlertTriangle className="h-4 w-4 text-red-500 mr-2" />
+                <span className="text-red-400">
                   {criticalAlerts + highAlerts}
                 </span>
               </div>
               <div className="flex items-center bg-gray-800 px-3 py-1 rounded-md">
-                <Camera className="h-4 w-4 text-blue-500 mr-2" />
-                <span className="text-blue-400">{onlineCameras}</span>
+                <Camera className="h-4 w-4 text-red-500 mr-2" />
+                <span className="text-red-400">{onlineCameras}</span>
               </div>
             </div>
+          </div>
+        </div>
+
+        {/* Alert banner */}
+        <div className="absolute bottom-0 left-0 w-full bg-red-900/80 text-white py-1 px-4 text-sm flex justify-between items-center">
+          <div className="flex items-center">
+            <AlertTriangle className="h-4 w-4 mr-2 animate-pulse" />
+            <span>CRITICAL SECURITY BREACH DETECTED</span>
+          </div>
+          <div>
+            <span className="text-xs">Incident ID: #25052-RED-ALERT</span>
           </div>
         </div>
       </header>
@@ -600,18 +832,32 @@ export default function CyberDashboard() {
           <div className="lg:col-span-2 space-y-4">
             {/* Terminal windows */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {[0].map((index) => (
+              {[0, 1, 2, 3].map((index) => (
                 <div
                   key={`terminal-${index}`}
-                  className={`bg-black border border-gray-800 rounded-md overflow-hidden ${
+                  className={`bg-black border ${
+                    index === 0 ? "border-gray-800" : "border-red-900"
+                  } rounded-md overflow-hidden ${
                     expandedWindow === index ? "fixed inset-4 z-50" : ""
                   }`}
                 >
-                  <div className="bg-gray-900 px-3 py-2 flex justify-between items-center border-b border-gray-800">
+                  <div
+                    className={`${
+                      index === 0 ? "bg-gray-900" : "bg-red-900/30"
+                    } px-3 py-2 flex justify-between items-center border-b ${
+                      index === 0 ? "border-gray-800" : "border-red-800"
+                    }`}
+                  >
                     <div className="flex items-center">
-                      <Terminal className="h-4 w-4 text-green-500 mr-2" />
+                      <Terminal
+                        className={`h-4 w-4 ${
+                          index === 0 ? "text-green-500" : "text-red-500"
+                        } mr-2`}
+                      />
                       <span className="text-sm text-gray-300">
-                        Terminal {index + 1}
+                        {index === 0
+                          ? `Terminal ${index + 1}`
+                          : `Hacked Terminal ${index}`}
                       </span>
                     </div>
                     <div className="flex items-center space-x-2">
@@ -634,7 +880,9 @@ export default function CyberDashboard() {
                   </div>
                   <div
                     ref={(el) => (terminalRefs.current[index] = el)}
-                    className="p-3 h-64 overflow-y-auto font-mono text-sm text-green-400 bg-black"
+                    className={`p-3 h-64 overflow-y-auto font-mono text-sm ${
+                      index === 0 ? "text-green-400" : "text-red-400"
+                    } bg-black`}
                     style={{
                       height:
                         expandedWindow === index
@@ -653,195 +901,89 @@ export default function CyberDashboard() {
                   </div>
                 </div>
               ))}
-              {/* CCTV Footage Section */}
-              <div className="bg-gray-800 border border-gray-700 rounded-md overflow-hidden">
-                <div className="bg-gray-900 px-4 py-3 flex justify-between items-center border-b border-gray-700">
-                  <div className="flex items-center">
-                    <Camera className="h-5 w-5 text-blue-500 mr-2" />
-                    <h2 className="text-lg font-semibold text-gray-200">
-                      CCTV Surveillance
-                    </h2>
-                  </div>
-                  <div className="flex items-center text-sm">
-                    <span className="text-blue-400 font-bold">
-                      {onlineCameras}
-                    </span>
-                    <span className="text-gray-400 mx-1">/</span>
-                    <span className="text-gray-300">{cctvFeeds.length}</span>
-                    <span className="text-gray-400 ml-1">Online</span>
-                  </div>
-                </div>
+            </div>
 
-                {/* Active camera feed (expanded view) */}
-                {activeCameraFeed !== null && (
-                  <div className="relative">
-                    <div className="absolute inset-0 bg-black/80 z-10 flex items-center justify-center p-4">
-                      <div className="w-full max-w-full">
-                        <div className="bg-gray-900 border border-gray-700 rounded-md overflow-hidden">
-                          <div className="bg-gray-800 px-3 py-2 flex justify-between items-center">
-                            <div className="flex items-center">
-                              <Camera className="h-4 w-4 text-blue-500 mr-2" />
-                              <span className="text-gray-300">
-                                {
-                                  cctvFeeds.find(
-                                    (feed) => feed.id === activeCameraFeed
-                                  )?.location
-                                }
-                              </span>
-                              <span
-                                className={`ml-2 px-2 py-0.5 text-xs rounded-full ${
-                                  cctvFeeds.find(
-                                    (feed) => feed.id === activeCameraFeed
-                                  )?.status === "online"
-                                    ? "bg-green-900/50 text-green-400"
-                                    : "bg-red-900/50 text-red-400"
-                                }`}
-                              >
-                                {
-                                  cctvFeeds.find(
-                                    (feed) => feed.id === activeCameraFeed
-                                  )?.status
-                                }
-                              </span>
-                            </div>
-                            <button
-                              onClick={() => setActiveCameraFeed(null)}
-                              className="text-gray-400 hover:text-gray-200"
-                            >
-                              <X className="h-5 w-5" />
-                            </button>
-                          </div>
-                          <div className="relative">
-                            <Image
-                              src={
-                                cctvFeeds.find(
-                                  (feed) => feed.id === activeCameraFeed
-                                )?.image || "/placeholder.svg"
-                              }
-                              alt="CCTV Feed"
-                              width={900}
-                              height={450}
-                              className="w-full h-auto"
-                            />
-                            {/* Camera overlay elements */}
-                            <div className="absolute top-0 left-0 w-full p-2 flex justify-between text-xs text-white/70">
-                              <div>CAM-{activeCameraFeed}</div>
-                              <div className="flex items-center">
-                                <div className="h-2 w-2 bg-red-500 rounded-full animate-pulse mr-1"></div>
-                                <span>REC</span>
-                              </div>
-                            </div>
-                            <div className="absolute bottom-0 left-0 w-full p-2 flex justify-between text-xs text-white/70">
-                              <div>{formatTime(currentTime)}</div>
-                              <div>FPS: 30</div>
-                            </div>
-                            {/* Grid overlay */}
-                            <div className="absolute inset-0 pointer-events-none">
-                              <div className="w-full h-full border border-white/10"></div>
-                              <div className="absolute left-1/3 top-0 w-px h-full bg-white/10"></div>
-                              <div className="absolute left-2/3 top-0 w-px h-full bg-white/10"></div>
-                              <div className="absolute top-1/3 left-0 h-px w-full bg-white/10"></div>
-                              <div className="absolute top-2/3 left-0 h-px w-full bg-white/10"></div>
-                            </div>
-                          </div>
-                          <div className="bg-gray-900 p-3 flex justify-between items-center">
-                            <div className="text-sm text-gray-400">
-                              Last motion detected:{" "}
-                              {
-                                cctvFeeds.find(
-                                  (feed) => feed.id === activeCameraFeed
-                                )?.lastMotion
-                              }
-                            </div>
-                            <div className="flex space-x-2">
-                              <button className="px-2 py-1 bg-gray-800 rounded text-xs text-gray-300 hover:bg-gray-700">
-                                Playback
-                              </button>
-                              <button className="px-2 py-1 bg-gray-800 rounded text-xs text-gray-300 hover:bg-gray-700">
-                                Export
-                              </button>
-                              <button className="px-2 py-1 bg-gray-800 rounded text-xs text-gray-300 hover:bg-gray-700">
-                                Settings
-                              </button>
-                            </div>
-                          </div>
+            {/* Data Theft Progress */}
+            <div className="bg-gray-800 border border-red-900 rounded-md overflow-hidden">
+              <div className="bg-red-900/30 px-4 py-3 flex justify-between items-center border-b border-red-800">
+                <div className="flex items-center">
+                  <Database className="h-5 w-5 text-red-500 mr-2" />
+                  <h2 className="text-lg font-semibold text-gray-200">
+                    Data Exfiltration Status
+                  </h2>
+                </div>
+                <div className="text-sm text-red-400 animate-pulse">
+                  ACTIVE THEFT IN PROGRESS
+                </div>
+              </div>
+              <div className="p-4">
+                <div className="space-y-3">
+                  {stolenDataCategories.map((category) => (
+                    <div
+                      key={category.name}
+                      className="bg-gray-900 border border-gray-800 rounded-md p-3"
+                    >
+                      <div className="flex justify-between items-center mb-2">
+                        <div className="flex items-center">
+                          <FileText className="h-4 w-4 text-gray-400 mr-2" />
+                          <span className="font-medium text-gray-300">
+                            {category.name}
+                          </span>
                         </div>
+                        <div
+                          className={`text-xs px-2 py-0.5 rounded-full ${
+                            category.status === "Exfiltrated"
+                              ? "bg-red-900/50 text-red-400"
+                              : category.status === "Exfiltrating"
+                              ? "bg-yellow-900/50 text-yellow-400 animate-pulse"
+                              : "bg-gray-800 text-gray-400"
+                          }`}
+                        >
+                          {category.status}
+                        </div>
+                      </div>
+                      <div className="flex justify-between text-xs text-gray-400 mb-1">
+                        <span>
+                          {category.files} files ({category.size})
+                        </span>
+                        <span>{category.timestamp}</span>
+                      </div>
+                      <div className="w-full bg-gray-800 rounded-full h-1.5">
+                        <div
+                          className={`h-1.5 rounded-full ${
+                            category.status === "Exfiltrated"
+                              ? "bg-red-600"
+                              : category.status === "Exfiltrating"
+                              ? "bg-yellow-600"
+                              : "bg-gray-600"
+                          }`}
+                          style={{
+                            width:
+                              category.status === "Exfiltrated"
+                                ? "100%"
+                                : category.status === "Exfiltrating"
+                                ? "65%"
+                                : "0%",
+                          }}
+                        ></div>
                       </div>
                     </div>
-                  </div>
-                )}
-
-                <div className="p-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
-                    {cctvFeeds.map((feed) => (
-                      <div
-                        key={feed.id}
-                        className={`bg-gray-900 border border-gray-700 rounded-md overflow-hidden cursor-pointer hover:border-blue-500 transition-colors ${
-                          feed.status === "offline" ? "opacity-60" : ""
-                        }`}
-                        onClick={() =>
-                          feed.status === "online" && expandCameraFeed(feed.id)
-                        }
-                      >
-                        <div className="relative">
-                          <Image
-                            src={feed.image || "/placeholder.svg"}
-                            alt={feed.location}
-                            width={320}
-                            height={180}
-                            className="w-full h-auto"
-                          />
-                          {/* Camera overlay elements */}
-                          <div className="absolute top-0 left-0 w-full p-2 flex justify-between text-xs text-white/70">
-                            <div>CAM-{feed.id}</div>
-                            {feed.recording && feed.status === "online" && (
-                              <div className="flex items-center">
-                                <div className="h-2 w-2 bg-red-500 rounded-full animate-pulse mr-1"></div>
-                                <span>REC</span>
-                              </div>
-                            )}
-                          </div>
-                          <div className="absolute bottom-0 left-0 w-full p-2 flex justify-between text-xs text-white/70">
-                            <div>{formatTime(currentTime)}</div>
-                            {feed.status === "online" && <div>FPS: 30</div>}
-                          </div>
-                          {/* Status indicator */}
-                          <div
-                            className={`absolute top-2 right-2 px-2 py-0.5 text-xs rounded-full ${
-                              feed.status === "online"
-                                ? "bg-green-900/50 text-green-400"
-                                : "bg-red-900/50 text-red-400"
-                            }`}
-                          >
-                            {feed.status}
-                          </div>
-                        </div>
-                        <div className="p-2">
-                          <div className="font-medium text-gray-300">
-                            {feed.location}
-                          </div>
-                          <div className="text-xs text-gray-400 mt-1">
-                            Last motion:{" "}
-                            {feed.status === "online" ? feed.lastMotion : "N/A"}
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                  ))}
                 </div>
               </div>
             </div>
+
             {/* Security Alerts */}
-            <div className="bg-gray-800 border border-gray-700 rounded-md overflow-hidden">
-              <div className="bg-gray-900 px-4 py-3 flex justify-between items-center border-b border-gray-700">
+            <div className="bg-gray-800 border border-red-900 rounded-md overflow-hidden">
+              <div className="bg-red-900/30 px-4 py-3 flex justify-between items-center border-b border-red-800">
                 <div className="flex items-center">
-                  <AlertTriangle className="h-5 w-5 text-yellow-500 mr-2" />
+                  <AlertTriangle className="h-5 w-5 text-red-500 mr-2 animate-pulse" />
                   <h2 className="text-lg font-semibold text-gray-200">
                     Security Alerts
                   </h2>
                 </div>
                 <div className="flex items-center text-sm">
-                  <span className="text-red-500 font-bold">
+                  <span className="text-red-500 font-bold animate-pulse">
                     {criticalAlerts}
                   </span>
                   <span className="text-gray-400 mx-1">critical</span>
@@ -864,7 +1006,7 @@ export default function CyberDashboard() {
                           : alert.level === "medium"
                           ? "bg-orange-900/20 border-orange-800"
                           : "bg-blue-900/20 border-blue-800"
-                      }`}
+                      } ${alert.level === "critical" ? "animate-pulse" : ""}`}
                     >
                       <div className="flex justify-between items-start">
                         <div
@@ -897,9 +1039,166 @@ export default function CyberDashboard() {
 
           {/* Right column */}
           <div className="space-y-4">
+            {/* Ransom Message */}
+            <div className="bg-black border-2 border-red-600 rounded-md overflow-hidden">
+              <div className="bg-red-900/30 px-4 py-3 flex justify-between items-center border-b border-red-800">
+                <div className="flex items-center">
+                  <Skull className="h-5 w-5 text-red-500 mr-2" />
+                  <h2 className="text-lg font-semibold text-red-400">
+                    RANSOM DEMAND
+                  </h2>
+                </div>
+              </div>
+              <div className="p-4 text-center">
+                <div className="text-red-500 text-2xl font-bold mb-4 animate-pulse">
+                  YOUR UNIVERSITY DATA IS ENCRYPTED
+                </div>
+                <div className="text-gray-300 mb-4">
+                  We have successfully exfiltrated and encrypted all your
+                  sensitive data:
+                </div>
+                <ul className="text-left text-gray-300 mb-4 space-y-1">
+                  <li>• Student records and personal information</li>
+                  <li>• Exam results and question papers</li>
+                  <li>• Financial records and payment details</li>
+                  <li>• Research papers and intellectual property</li>
+                  <li>• Faculty personal data and credentials</li>
+                </ul>
+                <div className="text-yellow-500 mb-4">
+                  Pay <span className="font-bold">50 Bitcoin</span> within 48
+                  hours or all data will be published
+                </div>
+                <div className="bg-gray-900 p-3 rounded text-gray-400 font-mono text-sm mb-4">
+                  bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh
+                </div>
+                <div className="text-xs text-gray-500">
+                  Time remaining: 47:22:15
+                </div>
+              </div>
+            </div>
+
+            {/* CCTV Footage - Compromised */}
+            <div className="bg-gray-800 border border-red-900 rounded-md overflow-hidden">
+              <div className="bg-red-900/30 px-4 py-3 flex justify-between items-center border-b border-red-800">
+                <div className="flex items-center">
+                  <Camera className="h-5 w-5 text-red-500 mr-2" />
+                  <h2 className="text-lg font-semibold text-gray-200">
+                    CCTV Surveillance
+                  </h2>
+                </div>
+                <div className="flex items-center text-sm">
+                  <span className="text-red-400 font-bold">
+                    {onlineCameras}
+                  </span>
+                  <span className="text-gray-400 mx-1">/</span>
+                  <span className="text-gray-300">{cctvFeeds.length}</span>
+                  <span className="text-gray-400 ml-1">Online</span>
+                </div>
+              </div>
+              <div className="p-4 bg-black/50">
+                <div className="text-center p-8 text-red-500 font-bold">
+                  CAMERA FEEDS DISABLED
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {cctvFeeds.map((feed) => (
+                    <div
+                      key={feed.id}
+                      className="bg-gray-900 border border-gray-700 rounded-md overflow-hidden opacity-60"
+                    >
+                      <div className="relative">
+                        <div className="absolute inset-0 bg-black/70 flex items-center justify-center">
+                          <div className="text-red-500 font-bold">
+                            NO SIGNAL
+                          </div>
+                        </div>
+                        <Image
+                          src={feed.image || "/placeholder.svg"}
+                          alt={feed.location}
+                          width={320}
+                          height={180}
+                          className="w-full h-auto"
+                        />
+                      </div>
+                      <div className="p-2">
+                        <div className="font-medium text-gray-300">
+                          {feed.location}
+                        </div>
+                        <div className="text-xs text-red-400 mt-1">
+                          Status: Disabled by attacker
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* System Status */}
+            <div className="bg-gray-800 border border-red-900 rounded-md overflow-hidden">
+              <div className="bg-red-900/30 px-4 py-3 flex justify-between items-center border-b border-red-800">
+                <div className="flex items-center">
+                  <Server className="h-5 w-5 text-red-500 mr-2" />
+                  <h2 className="text-lg font-semibold text-gray-200">
+                    System Status
+                  </h2>
+                </div>
+                <div className="text-sm text-red-400 animate-pulse">
+                  CRITICAL FAILURE
+                </div>
+              </div>
+              <div className="p-4">
+                <div className="space-y-3">
+                  {systemStatus.map((system) => (
+                    <div
+                      key={system.name}
+                      className="flex items-center justify-between"
+                    >
+                      <div className="flex items-center">
+                        <div
+                          className={`h-3 w-3 rounded-full mr-2 ${
+                            system.status === "operational"
+                              ? "bg-green-500"
+                              : system.status === "degraded"
+                              ? "bg-yellow-500"
+                              : system.status === "compromised"
+                              ? "bg-red-500 animate-pulse"
+                              : "bg-gray-500"
+                          }`}
+                        ></div>
+                        <span className="text-gray-300">{system.name}</span>
+                      </div>
+                      <div className="flex items-center">
+                        <div className="w-24 bg-gray-700 rounded-full h-2 mr-2">
+                          <div
+                            className={`h-2 rounded-full ${
+                              system.status === "compromised"
+                                ? "bg-red-500"
+                                : system.status === "offline"
+                                ? "bg-gray-600"
+                                : system.load < 50
+                                ? "bg-green-500"
+                                : system.load < 80
+                                ? "bg-yellow-500"
+                                : "bg-red-500"
+                            }`}
+                            style={{ width: `${system.load}%` }}
+                          ></div>
+                        </div>
+                        <span className="text-xs text-gray-400 w-10">
+                          {system.status === "offline"
+                            ? "0%"
+                            : `${system.load}%`}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
             {/* Wanted Persons Section */}
-            <div className="bg-gray-800 border border-gray-700 rounded-md overflow-hidden">
-              <div className="bg-gray-900 px-4 py-3 flex justify-between items-center border-b border-gray-700">
+            <div className="bg-gray-800 border border-red-900 rounded-md overflow-hidden">
+              <div className="bg-red-900/30 px-4 py-3 flex justify-between items-center border-b border-red-800">
                 <div className="flex items-center">
                   <User className="h-5 w-5 text-red-500 mr-2" />
                   <h2 className="text-lg font-semibold text-gray-200">
@@ -918,7 +1217,7 @@ export default function CyberDashboard() {
                     placeholder="Search by name, alias, or charges..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full bg-gray-900 border border-gray-700 rounded-md py-2 pl-10 pr-4 text-gray-300 text-sm focus:outline-none focus:border-blue-500"
+                    className="w-full bg-gray-900 border border-gray-700 rounded-md py-2 pl-10 pr-4 text-gray-300 text-sm focus:outline-none focus:border-red-500"
                   />
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-500" />
                 </div>
@@ -985,224 +1284,24 @@ export default function CyberDashboard() {
                 </div>
               </div>
             </div>
-
-            {/* System Status */}
-            <div className="bg-gray-800 border border-gray-700 rounded-md overflow-hidden">
-              <div className="bg-gray-900 px-4 py-3 flex justify-between items-center border-b border-gray-700">
-                <div className="flex items-center">
-                  <Server className="h-5 w-5 text-purple-500 mr-2" />
-                  <h2 className="text-lg font-semibold text-gray-200">
-                    System Status
-                  </h2>
-                </div>
-                <div className="text-sm text-gray-400">
-                  Last updated: {formatTime(currentTime)}
-                </div>
-              </div>
-              <div className="p-4">
-                <div className="space-y-3">
-                  {systemStatus.map((system) => (
-                    <div
-                      key={system.name}
-                      className="flex items-center justify-between"
-                    >
-                      <div className="flex items-center">
-                        <div
-                          className={`h-3 w-3 rounded-full mr-2 ${
-                            system.status === "operational"
-                              ? "bg-green-500"
-                              : system.status === "degraded"
-                              ? "bg-yellow-500"
-                              : "bg-red-500"
-                          }`}
-                        ></div>
-                        <span className="text-gray-300">{system.name}</span>
-                      </div>
-                      <div className="flex items-center">
-                        <div className="w-24 bg-gray-700 rounded-full h-2 mr-2">
-                          <div
-                            className={`h-2 rounded-full ${
-                              system.load < 50
-                                ? "bg-green-500"
-                                : system.load < 80
-                                ? "bg-yellow-500"
-                                : "bg-red-500"
-                            }`}
-                            style={{ width: `${system.load}%` }}
-                          ></div>
-                        </div>
-                        <span className="text-xs text-gray-400 w-10">
-                          {system.load}%
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Performance metrics */}
-            <div className="bg-gray-800 border border-gray-700 rounded-md overflow-hidden">
-              <div className="bg-gray-900 px-4 py-3 flex justify-between items-center border-b border-gray-700">
-                <div className="flex items-center">
-                  <BarChart3 className="h-5 w-5 text-green-500 mr-2" />
-                  <h2 className="text-lg font-semibold text-gray-200">
-                    Performance Metrics
-                  </h2>
-                </div>
-                <button className="text-gray-400 hover:text-gray-200">
-                  <RefreshCw className="h-4 w-4" />
-                </button>
-              </div>
-              <div className="p-4">
-                <div className="space-y-4">
-                  <div>
-                    <div className="flex justify-between text-sm mb-1">
-                      <span className="text-gray-400">CPU Usage</span>
-                      <span className="text-gray-300">67%</span>
-                    </div>
-                    <div className="w-full bg-gray-700 rounded-full h-2">
-                      <div
-                        className="bg-green-500 h-2 rounded-full"
-                        style={{ width: "67%" }}
-                      ></div>
-                    </div>
-                  </div>
-
-                  <div>
-                    <div className="flex justify-between text-sm mb-1">
-                      <span className="text-gray-400">Memory Usage</span>
-                      <span className="text-gray-300">8.2 GB / 16 GB</span>
-                    </div>
-                    <div className="w-full bg-gray-700 rounded-full h-2">
-                      <div
-                        className="bg-blue-500 h-2 rounded-full"
-                        style={{ width: "51%" }}
-                      ></div>
-                    </div>
-                  </div>
-
-                  <div>
-                    <div className="flex justify-between text-sm mb-1">
-                      <span className="text-gray-400">Network Bandwidth</span>
-                      <span className="text-gray-300">42.5 Mbps</span>
-                    </div>
-                    <div className="w-full bg-gray-700 rounded-full h-2">
-                      <div
-                        className="bg-purple-500 h-2 rounded-full"
-                        style={{ width: "35%" }}
-                      ></div>
-                    </div>
-                  </div>
-
-                  <div>
-                    <div className="flex justify-between text-sm mb-1">
-                      <span className="text-gray-400">Disk I/O</span>
-                      <span className="text-gray-300">15.2 MB/s</span>
-                    </div>
-                    <div className="w-full bg-gray-700 rounded-full h-2">
-                      <div
-                        className="bg-yellow-500 h-2 rounded-full"
-                        style={{ width: "28%" }}
-                      ></div>
-                    </div>
-                  </div>
-
-                  <div className="pt-2 border-t border-gray-700">
-                    <div className="flex justify-between text-sm text-gray-400">
-                      <span>System Uptime</span>
-                      <span>45d 12h 37m</span>
-                    </div>
-                    <div className="flex justify-between text-sm text-gray-400 mt-1">
-                      <span>Last Reboot</span>
-                      <span>2025-04-07 02:45:12</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Active Team Members */}
-            <div className="bg-gray-800 border border-gray-700 rounded-md overflow-hidden">
-              <div className="bg-gray-900 px-4 py-3 flex justify-between items-center border-b border-gray-700">
-                <div className="flex items-center">
-                  <Users className="h-5 w-5 text-blue-500 mr-2" />
-                  <h2 className="text-lg font-semibold text-gray-200">
-                    Team Members
-                  </h2>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <div className="flex items-center">
-                    <div className="h-2 w-2 bg-green-500 rounded-full mr-1"></div>
-                    <span className="text-xs text-gray-400">
-                      {activeMembers}
-                    </span>
-                  </div>
-                  <div className="flex items-center">
-                    <div className="h-2 w-2 bg-yellow-500 rounded-full mr-1"></div>
-                    <span className="text-xs text-gray-400">{idleMembers}</span>
-                  </div>
-                  <div className="flex items-center">
-                    <div className="h-2 w-2 bg-gray-500 rounded-full mr-1"></div>
-                    <span className="text-xs text-gray-400">
-                      {offlineMembers}
-                    </span>
-                  </div>
-                </div>
-              </div>
-              <div className="p-4 max-h-80 overflow-y-auto">
-                <div className="space-y-2">
-                  {teamMembers.map((member) => (
-                    <div
-                      key={member.id}
-                      className="flex items-center justify-between"
-                    >
-                      <div className="flex items-center">
-                        <div
-                          className={`h-2 w-2 rounded-full mr-2 ${
-                            member.status === "active"
-                              ? "bg-green-500"
-                              : member.status === "idle"
-                              ? "bg-yellow-500"
-                              : "bg-gray-500"
-                          }`}
-                        ></div>
-                        <span className="text-gray-300">{member.name}</span>
-                      </div>
-                      <div className="text-xs text-gray-400">
-                        {member.lastActive}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Hidden CTF Flag */}
-            <div
-              className="hidden"
-              data-flag="FLAG{DASHBOARD_HIDDEN_FLAG_2025}"
-            ></div>
           </div>
         </div>
-
-        {/* Bottom row */}
       </div>
 
       {/* Footer */}
-      <footer className="bg-black border-t border-gray-800 p-4 mt-4">
+      <footer className="bg-black border-t border-red-800 p-4 mt-4">
         <div className="container mx-auto flex justify-between items-center text-xs text-gray-500">
           <div>
             © 2025 Faculty of Engineering - Intelligence and Cybersecurity Unit
           </div>
           <div className="flex items-center">
-            <div className="h-2 w-2 bg-green-500 rounded-full animate-pulse mr-1"></div>
-            <span>SYSTEM SECURE</span>
+            <div className="h-2 w-2 bg-red-500 rounded-full animate-pulse mr-1"></div>
+            <span className="text-red-500">SYSTEM COMPROMISED</span>
             <span className="mx-2">|</span>
             <span>
               FLAG
               <span className="text-black bg-black hover:bg-transparent">
-                {"{D4SH_S3CUR1TY_1NT3L}"}
+                {"{H4CK3D_UN1V3RS1TY_D4T4}"}
               </span>
             </span>
           </div>

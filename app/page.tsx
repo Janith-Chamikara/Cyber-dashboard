@@ -1,5 +1,6 @@
-import CyberDashboard from "@/components/dashboard/CyberDashboard"
+"use client";
+import CyberDashboard from "@/components/dashboard/CyberDashboard";
 
 export default function Home() {
-  return <CyberDashboard />
+  return <CyberDashboard />;
 }
